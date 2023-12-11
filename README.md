@@ -1,6 +1,6 @@
 # netatmo-sensors
 CLI utility which is reading and printing current Netatmo Weather Station telemetry
-Its work based on lnetatmo library: https://github.com/Straumleaf/netatmo-sensors.git
+Its work based on lnetatmo library: https://github.com/philippelt/netatmo-api-python
 
 Work in progress
     - going to add --station-name: flag to make possible request any user station without editing script
@@ -24,4 +24,4 @@ To setup netatmo-sensors.py you need
     - open 'netatmo-sensors.py' and find line 6 with 'stationName' variable and change its value to the name of your Netatmo weather station as it stated
       on the left top corner of netatmo web-page
     - now everything is ready, just type: 'python3 netatmo-sensors.py' or './netatmo-sensors.py' making sure that executable flag is on
-     
+
