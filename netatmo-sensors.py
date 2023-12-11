@@ -1,9 +1,22 @@
 #!/usr/bin/env python
 import lnetatmo
 import datetime
+import argparse
 
 # station name as on the Netatmo web site
-stationName = 'Homeworld'
+# stationName = 'Homeworld'
+
+# flags and arguments
+parser = argparse.ArgumentParser(description = 'print telemetry data of Netatmo weather station')
+parser.add_argument('station_name', type=str, help = 'Netatmo weather station name')                          # name of weather station
+#parser.add_argument('-c','--color', type=str, help = 'yes/no, default - No', default = 'no')                  # color - yes/No
+#parser.add_argument('-u','--units', type=str, help = 'f - for Fahrenheit, c - for Celsius ', default = 'c')   # (f)fahrenheit or (c)celsius
+
+args = parser.parse_args()
+
+stationName = args.station_name
+#outputColor = args.color
+#units = args.units
 
 # ANSI color codes
 DEFAULT = '\033[0m' 
