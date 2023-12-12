@@ -3,8 +3,7 @@ CLI utility which is reading and printing current Netatmo Weather Station teleme
 Its work based on lnetatmo library: https://github.com/philippelt/netatmo-api-python
 
 ## Work in progress
-+ going to add `--station-name:` flag to make possible request any user station without editing script
-    for the momemnt station name is hardcoded. 
++ working on mostly on cosmetic things and optimizations. 
 
 ## To setup netatmo-sensors.py you need
 + install Python (most recent version)
