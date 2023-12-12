@@ -1,5 +1,5 @@
 # netatmo-sensors
-CLI utility which is reading and printing current Netatmo Weather Station telemetry
+CLI utility which is reading and printing current Netatmo Weather Station telemetry.
 Its work based on lnetatmo library: https://github.com/philippelt/netatmo-api-python
 
 ## Work in progress
@@ -25,5 +25,6 @@ Its work based on lnetatmo library: https://github.com/philippelt/netatmo-api-py
 ### netatmo-sensors [-h] [-c COLOR] [-u UNITS] station_name
 + `station_name` - Netatmo weather station name for eg.: `netatmo-sensors MyWeatherStation`
 + optional parameters
-    - `-c COLOR, --color`   coloring application output. Please put `Yes` or `yes` for easy reading, default is no coloring.
-    - `-u UNITS, --units`   temperature units Fahrenheit or Celsius. Put `f` for Fahrenheit, default is Celsius.
+    - `-c {yes/no}, --color {yes/no}`   coloring application output. Please put `Yes` or `yes` for easy reading, default is no coloring.
+    - `-t {f,c}, --temp {f,c}`   temperature units - Fahrenheit or Celsius. Put `f` for Fahrenheit, default is Celsius.
+    - `-p {mb,in,mm}, --pressure {mb,in,mm}`    pressure units - `mb` for mbar, `in` for inHg and `mm` for mmHg.  
