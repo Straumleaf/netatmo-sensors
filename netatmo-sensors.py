@@ -3,20 +3,24 @@ import lnetatmo
 import datetime
 import argparse
 
-# station name as on the Netatmo web site
-# stationName = 'Homeworld'
-
-# flags and arguments
-parser = argparse.ArgumentParser(description = 'print telemetry data of Netatmo weather station')
-parser.add_argument('station_name', type=str, help = 'Netatmo weather station name')                          # name of weather station
-parser.add_argument('-c','--color', type=str, help = 'yes/no, default - No', default = 'no')                  # color - yes/No
-parser.add_argument('-u','--units', type=str, help = 'f - for Fahrenheit, c - for Celsius ', default = 'c')   # (f)fahrenheit or (c)celsius
+# parsing CLI arguments
+parser = argparse.ArgumentParser(description = 'print telemetry data of Netatmo weather station',
+                                  formatter_class = argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument('station_name', type = str,
+                     help = 'Netatmo weather station name')                                 # name of weather station
+parser.add_argument('-c','--color', choices = ['yes', 'no'], type = str,
+                     help = 'color or b/w output', default = 'no')                          # color or b/w
+parser.add_argument('-t','--temp', choices = ['f', 'c'], type = str,
+                     help = 'f - for Fahrenheit, c - for Celsius ', default = 'c')          # temp units
+parser.add_argument('-p','--pressure', choices = ['mb', 'in', 'mm'], type = str,
+                     help = 'mb - for mbar, in - for inHg, mm - for mmHg', default = 'mb')   # pressure units
 
 args = parser.parse_args()
 
 stationName = args.station_name
 outputColor = args.color
-units = args.units
+tempUnits = args.temp
+pressureUnits = args.pressure
 
 # ANSI color codes
 DEFAULT = '\033[0m' 
@@ -31,13 +35,13 @@ WHITE = '\033[37m'
 # units type
 CELSIUS = '°C' 
 FAHREHEIT = '°F'
+MBAR = ' mbar'
+IN_HG = ' inHg'
+MM_HG = ' mmHg'
 
 # function just add to value ANSI color tag
 def wrap_in_color_tag(val, color = None):
-    if color is None:
-        return f"{DEFAULT}{val}"
-    else:
-        return f"{color}{val}{DEFAULT}"
+    return f"{DEFAULT}{val}" if color is None else f"{color}{val}{DEFAULT}"
 
 # coloring outputs depending of its value
 def value_in_color (val, sensor):
@@ -80,7 +84,7 @@ def value_in_color (val, sensor):
 def value_postfix(sensor):
     match sensor:
         case 'Temperature':
-            unit_degree = FAHREHEIT if units == 'f' else CELSIUS
+            unit_degree = FAHREHEIT if tempUnits == 'f' else CELSIUS
             return unit_degree
         case 'CO2':
             return ' ppm'
@@ -89,7 +93,8 @@ def value_postfix(sensor):
         case 'battery_percent':
             return '%'
         case 'Pressure':
-            return ' mbar'
+            unit_pressure = MM_HG if pressureUnits == 'mm' else IN_HG if pressureUnits == 'in' else MBAR
+            return unit_pressure
 
 # return sensor alias if available
 def sensor_alias(sensor):
