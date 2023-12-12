@@ -2,18 +2,21 @@
 import lnetatmo
 import datetime
 import argparse
+import json
 
 # parsing CLI arguments
 parser = argparse.ArgumentParser(description = 'print telemetry data of Netatmo weather station',
                                   formatter_class = argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('station_name', type = str,
-                     help = 'Netatmo weather station name')                                 # name of weather station
+                     help = 'Netatmo weather station name')                                  # name of weather station
 parser.add_argument('-c','--color', choices = ['yes', 'no'], type = str,
-                     help = 'color or b/w output', default = 'no')                          # color or b/w
+                     help = 'color or b/w output', default = 'no')                           # color or b/w
 parser.add_argument('-t','--temp', choices = ['f', 'c'], type = str,
-                     help = 'f - for Fahrenheit, c - for Celsius ', default = 'c')          # temp units
+                     help = 'f - for Fahrenheit, c - for Celsius ', default = 'c')           # temp units
 parser.add_argument('-p','--pressure', choices = ['mb', 'in', 'mm'], type = str,
                      help = 'mb - for mbar, in - for inHg, mm - for mmHg', default = 'mb')   # pressure units
+parser.add_argument('-d', '--debug', choices = ['yes','no'], type = str,
+                     help = 'debuging information', default = 'no')                          # printing stations JSON file
 
 args = parser.parse_args()
 
@@ -21,6 +24,7 @@ stationName = args.station_name
 outputColor = args.color
 tempUnits = args.temp
 pressureUnits = args.pressure
+debug = args.debug
 
 # ANSI color codes
 DEFAULT = '\033[0m' 
@@ -122,13 +126,16 @@ def str_min_max_TH(sensor, val_minmaxTH):
             return ""
 
 def str_trend(lastStationData, station, sensor):
-    match sensor:
-        case 'Temperature':
-            return f",\ttrend = {lastStationData[station]['temp_trend']}"
-        case 'Pressure':
-            return f"\t\t\ttrend = {lastStationData[station]['pressure_trend']}"
-        case _:
-            return ""
+    try:
+        match sensor:
+            case 'Temperature':
+                return f",\ttrend = {lastStationData[station]['temp_trend']}"
+            case 'Pressure':
+                return f"\t\t\ttrend = {lastStationData[station]['pressure_trend']}"
+            case _:
+                return ""
+    except:
+        return ""
 
 # initializing the list of weather station sensors
 def list_of_sensors(numberOfModules):
@@ -178,3 +185,5 @@ except:
     str_buffer = 'Netatmo Server request failed!'
 
 print (str_buffer)
+if debug == 'yes':
+    print (json.dumps(lastStationData, indent=2))
