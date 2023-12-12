@@ -19,6 +19,12 @@ Its work based on lnetatmo library: https://github.com/philippelt/netatmo-api-py
     -  and push the button `Save`, after that you will get access to: client ID, client secret
         and also access to Token generator which is required to get access to your Weather Station
 + copy `client ID`, `client secret` and generated token and paste it in the file `.netatmo.credentials`
-+ place `.netatmo.credentials` file to your home directory/folder
-+ now everything is ready, just type: `python3 netatmo-sensors.py <station name>` or simply `./netatmo-sensors.py <station name>` making sure that executable flag is on and change `<station name>` for your weather station name which you can find on Netatmo web-page, top right coner. For instance: `./netatmo-sensors.py MyWeatherStation` 
++ place `.netatmo.credentials` file to your home directory
++ now everything is ready, just type: `python3 netatmo-sensors.py <station name>` or simply `./netatmo-sensors.py <station name>` making sure that executable flag is on and change `<station name>` for your weather station name which you can find on Netatmo web-page, top right coner. For instance: `./netatmo-sensors.py MyWeatherStation`
 
+## Run netatmo-sensors in CLI
+### netatmo-sensors [-h] [-c COLOR] [-u UNITS] station_name
++ `station_name` - Netatmo weather station name for eg.: `netatmo-sensors MyWeatherStation`
++ optional parameters
+    - `-c COLOR, --color`   coloring application output. Please put `Yes` or `yes` for easy reading, default is no coloring.
+    - `-u UNITS, --units`   temperature units Fahrenheit or Celsius. Put `f` for Fahrenheit, default is Celsius.
