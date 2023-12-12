@@ -9,14 +9,14 @@ import argparse
 # flags and arguments
 parser = argparse.ArgumentParser(description = 'print telemetry data of Netatmo weather station')
 parser.add_argument('station_name', type=str, help = 'Netatmo weather station name')                          # name of weather station
-#parser.add_argument('-c','--color', type=str, help = 'yes/no, default - No', default = 'no')                  # color - yes/No
-#parser.add_argument('-u','--units', type=str, help = 'f - for Fahrenheit, c - for Celsius ', default = 'c')   # (f)fahrenheit or (c)celsius
+parser.add_argument('-c','--color', type=str, help = 'yes/no, default - No', default = 'no')                  # color - yes/No
+parser.add_argument('-u','--units', type=str, help = 'f - for Fahrenheit, c - for Celsius ', default = 'c')   # (f)fahrenheit or (c)celsius
 
 args = parser.parse_args()
 
 stationName = args.station_name
-#outputColor = args.color
-#units = args.units
+outputColor = args.color
+units = args.units
 
 # ANSI color codes
 DEFAULT = '\033[0m' 
@@ -28,6 +28,10 @@ MAGENTA = '\033[35m'
 CYAN = '\033[36m'
 WHITE = '\033[37m'
 
+# units type
+CELSIUS = '°C' 
+FAHREHEIT = '°F'
+
 # function just add to value ANSI color tag
 def wrap_in_color_tag(val, color = None):
     if color is None:
@@ -37,43 +41,47 @@ def wrap_in_color_tag(val, color = None):
 
 # coloring outputs depending of its value
 def value_in_color (val, sensor):
-    match sensor:
-        case 'Temperature':
-            if val < 3:
-                return wrap_in_color_tag(val, BLUE)
-            if val < 15:
-                return wrap_in_color_tag(val, GREEN)
-            if val < 27:
-                return wrap_in_color_tag(val, YELLOW)
-            else:
-                return wrap_in_color_tag(val, RED)
-        case 'CO2':
-            if val < 500:
-                return wrap_in_color_tag(val, GREEN)
-            if val < 1500:
-                return wrap_in_color_tag(val, YELLOW)
-            else:
-                return wrap_in_color_tag(val, RED)
-        case 'battery_percent':
-            if val < 30:
-                return wrap_in_color_tag(val, RED)
-            if val < 60:
-                return wrap_in_color_tag(val, YELLOW)
-            else:
-                return wrap_in_color_tag(val, GREEN)
-        case 'Humidity':
-            if val < 40 or val > 60:
-                return wrap_in_color_tag(val, RED)
-            else:
-                return wrap_in_color_tag(val, GREEN)
-        case _:
-            return wrap_in_color_tag(val)
+    if outputColor == 'yes' or outputColor == 'Yes':
+        match sensor:
+            case 'Temperature':
+                if val < 3:
+                    return wrap_in_color_tag(val, BLUE)
+                if val < 15:
+                    return wrap_in_color_tag(val, GREEN)
+                if val < 27:
+                    return wrap_in_color_tag(val, YELLOW)
+                else:
+                    return wrap_in_color_tag(val, RED)
+            case 'CO2':
+                if val < 500:
+                    return wrap_in_color_tag(val, GREEN)
+                if val < 1500:
+                    return wrap_in_color_tag(val, YELLOW)
+                else:
+                    return wrap_in_color_tag(val, RED)
+            case 'battery_percent':
+                if val < 30:
+                    return wrap_in_color_tag(val, RED)
+                if val < 60:
+                    return wrap_in_color_tag(val, YELLOW)
+                else:
+                    return wrap_in_color_tag(val, GREEN)
+            case 'Humidity':
+                if val < 40 or val > 60:
+                    return wrap_in_color_tag(val, RED)
+                else:
+                    return wrap_in_color_tag(val, GREEN)
+            case _:
+                return wrap_in_color_tag(val)
+    else:
+        return wrap_in_color_tag(val)
 
 # generating ending/type for the given value 
 def value_postfix(sensor):
     match sensor:
         case 'Temperature':
-            return '°C'
+            unit_degree = FAHREHEIT if units == 'f' else CELSIUS
+            return unit_degree
         case 'CO2':
             return ' ppm'
         case 'Humidity':
