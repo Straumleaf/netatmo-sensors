@@ -71,7 +71,7 @@ def value_in_color (val, sensor):
     else:
         return wrap_in_color_tag(val)
 
-# generating ending/type for the given value 
+# placing a unit type to the end of the given value 
 def value_postfix(sensor):
     match sensor:
         case constants.TEMP:
@@ -87,7 +87,7 @@ def value_postfix(sensor):
             unit_pressure = MM_HG if pressureUnits == 'mm' else IN_HG if pressureUnits == 'in' else MBAR
             return unit_pressure
 
-# return sensor alias if available
+# change sensor name by alias if they available and add tabs
 def sensor_alias(sensor):
     match sensor:
         case constants.BAT:
@@ -124,7 +124,7 @@ def str_trend(lastStationData, station, sensor):
             case _:
                 return ""
     except:
-        return ""
+        return "N/A yet"
 
 # initializing the list of weather station sensors
 def list_of_sensors(numberOfModules):
