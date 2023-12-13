@@ -36,7 +36,7 @@ def wrap_in_color_tag(val, color = None):
 
 # coloring outputs depending of its value
 def value_in_color (val, sensor):
-    if outputColor == 'yes' or outputColor == 'Yes':
+    if args.color:
         match sensor:
             case constants.TEMP:
                 if val < 3:
@@ -103,6 +103,7 @@ def sensor_alias(sensor):
         case _:
             return sensor
                 
+# formating temperature and humidity max and min                
 def str_min_max_TH(sensor, val_minmaxTH):
     match sensor:
         case constants.TEMP:
@@ -112,6 +113,7 @@ def str_min_max_TH(sensor, val_minmaxTH):
         case _:
             return ""
 
+# reading temperature and pressure trends
 def str_trend(lastStationData, station, sensor):
     try:
         match sensor:
@@ -148,22 +150,20 @@ parser = argparse.ArgumentParser(description = 'print telemetry data of Netatmo 
                                   formatter_class = argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('station_name', type = str,
                      help = 'Netatmo weather station name')                                  # name of weather station
-parser.add_argument('-c','--color', choices = ['yes', 'no'], type = str,
-                     help = 'color or b/w output', default = 'no')                           # color or b/w
+parser.add_argument('-c','--color', action = 'store_true',
+                     help = 'color or b/w output')                                           # color or b/w
 parser.add_argument('-t','--temp', choices = ['f', 'c'], type = str,
                      help = 'f - for Fahrenheit, c - for Celsius ', default = 'c')           # temp units
 parser.add_argument('-p','--pressure', choices = ['mb', 'in', 'mm'], type = str,
                      help = 'mb - for mbar, in - for inHg, mm - for mmHg', default = 'mb')   # pressure units
-parser.add_argument('-d', '--debug', choices = ['yes','no'], type = str,
-                     help = 'debuging information', default = 'no')                          # printing stations JSON file
+parser.add_argument('-d', '--debug', action = 'store_true',
+                     help = 'raw telemetry information')                                          # printing stations JSON file
 
 args = parser.parse_args()
 
 stationName = args.station_name
-outputColor = args.color
 tempUnits = args.temp
 pressureUnits = args.pressure
-debug = args.debug
 
 now = datetime.datetime.now()
 print(f'>>> station name: {stationName} -', now.strftime('%H:%M:%S %d/%m/%Y'))
@@ -194,5 +194,5 @@ except:
     str_buffer = 'Netatmo Server request failed!'
 
 print (str_buffer)
-if debug == 'yes':
+if args.debug:
     print (json.dumps(lastStationData, indent = 2))
