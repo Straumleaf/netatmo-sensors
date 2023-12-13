@@ -17,19 +17,22 @@ Its work based on [lnetatmo](https://github.com/philippelt/netatmo-api-python) l
 
 + clone this repository.
 + go to https://dev.netatmo.com and make registration
-    -  login there and go to `My apps`' through the top right menu
+    -  login there and go to **My apps** through the top right menu
        or go straight to https://dev.netatmo.com/apps/ , whatever you prefer.
-    -  and create app by choosing `Create` button.
-    -  then fill such fields as: `app name`, `description`, `data protection officer name` and `data protection officer email` with appropriate information.
-    -  and push the button `Save`, after that you will get access to: client ID, client secret
+    -  and create app by choosing **Create** button.
+    -  then fill such fields as: **app name**, **description**, **data protection officer name** and **data protection officer email** with appropriate information.
+    -  and push the button **Save**, after that you will get access to: client ID, client secret
         and also access to Token generator which is required to get access to your Weather Station.
-+ copy `client ID`, `client secret` and generated token and paste it in the file `.netatmo.credentials`.
-+ place `.netatmo.credentials` file to your home directory, please.
++ copy **client ID**, **client secret** and generated token and paste it in the file **.netatmo.credentials**.
++ place **.netatmo.credentials** file to your home directory, please.
+
+       cp .netatmo.credentials ~/
+
 + now everything is ready, just type:
  
-         python3 netatmo-sensors.py <station name>
+       python3 netatmo-sensors.py <station name>
  
-  or simply
+  or simply if you set executable flag of netatmo-sensors.py 
  
         ./netatmo-sensors.py <station name>
  
@@ -37,7 +40,7 @@ Its work based on [lnetatmo](https://github.com/philippelt/netatmo-api-python) l
  
  Though the CLI should look like:
  
-         >./netatmo-sensors.py MyWeatherStationName
+        ./netatmo-sensors.py MyWeatherStationName
 
 ## Run netatmo-sensors in CLI
 ### usage: netatmo-sensors.py [-h] [-c] [-t {f,c}] [-p {mb,in,mm}] station_name
