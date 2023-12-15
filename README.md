@@ -3,7 +3,7 @@
 CLI utility which is reading and printing current Netatmo Weather Station telemetry.<br>
 Its work based on [lnetatmo](https://github.com/philippelt/netatmo-api-python) library: https://github.com/philippelt/netatmo-api-python
 
-![preview netatmo-sensors](https://github.com/Straumleaf/netatmo-wb-widget/blob/main/preview/netatmo-widget-scr-tooltip.png)
+![preview netatmo-sensors](https://github.com/Straumleaf/netatmo-sensors/blob/main/preview/netatmo-sensors-preview.png)
 
 ## Work in progress
 
