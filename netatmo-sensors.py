@@ -48,7 +48,7 @@ def value_in_color (val, sensor):
                 else:
                     return wrap_in_color_tag(val, RED)
             case constants.CO2:
-                if val < 500:
+                if val < 1000:
                     return wrap_in_color_tag(val, GREEN)
                 if val < 1500:
                     return wrap_in_color_tag(val, YELLOW)
