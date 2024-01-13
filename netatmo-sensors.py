@@ -5,6 +5,10 @@ import argparse
 import json
 import types
 
+# declaring temp and pressure units variables to use the lattely as Global 
+tempUnits = ''
+pressureUnits = ''
+
 # ANSI color codes
 DEFAULT = '\033[0m' 
 RED = '\033[31m'
@@ -145,54 +149,59 @@ def list_of_sensors(numberOfModules):
 
 # MAIN -----------------------------------------------------------------------------------
 
-# parsing CLI arguments
-parser = argparse.ArgumentParser(description = 'print telemetry data of Netatmo weather station',
-                                  formatter_class = argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument('station_name', type = str,
-                     help = 'Netatmo weather station name')                                  # name of weather station
-parser.add_argument('-c','--color', action = 'store_true',
-                     help = 'color or b/w output')                                           # color or b/w
-parser.add_argument('-t','--temp', choices = ['f', 'c'], type = str,
-                     help = 'f - for Fahrenheit, c - for Celsius ', default = 'c')           # temp units
-parser.add_argument('-p','--pressure', choices = ['mb', 'in', 'mm'], type = str,
-                     help = 'mb - for mbar, in - for inHg, mm - for mmHg', default = 'mb')   # pressure units
-parser.add_argument('-d', '--debug', action = 'store_true',
-                     help = 'raw telemetry information')                                          # printing stations JSON file
+def main(args):
+    stationName = args.station_name
 
-args = parser.parse_args()
+    global tempUnits, pressureUnits
+    tempUnits = args.temp
+    pressureUnits = args.pressure
 
-stationName = args.station_name
-tempUnits = args.temp
-pressureUnits = args.pressure
+    now = datetime.datetime.now()
+    print(f'>>> station name: {stationName} -', now.strftime('%H:%M:%S %d/%m/%Y'))
 
-now = datetime.datetime.now()
-print(f'>>> station name: {stationName} -', now.strftime('%H:%M:%S %d/%m/%Y'))
+    #1 : Authenticate
+    authorization = lnetatmo.ClientAuth()
 
-#1 : Authenticate
-authorization = lnetatmo.ClientAuth()
+    try:
+        # 2 : Creating class loaded with devices list and all telemetry
+        stationData = lnetatmo.WeatherStationData(authorization)
+        # getting list of weather station modules
+        stationModulesList = stationData.modulesNamesList(stationName)
+        # getting most recent telemetry from station
+        lastStationData = stationData.lastData()
+        
+        # counting existing modules
+        numberOfModules = len(stationModulesList)
+        listOfSensors = list_of_sensors(numberOfModules)
 
-try:
-    # 2 : Creating class loaded with devices list and all telemetry
-    stationData = lnetatmo.WeatherStationData(authorization)
-    # getting list of weather station modules
-    stationModulesList = stationData.modulesNamesList(stationName)
-    # getting most recent telemetry from station
-    lastStationData = stationData.lastData()
-    
-    # counting existing modules
-    numberOfModules = len(stationModulesList)
-    listOfSensors = list_of_sensors(numberOfModules)
+        str_buffer = f""
+        for station, sensorList in zip(stationModulesList, listOfSensors):
+            str_buffer += f"\n{station}\n"
+            for sensor in sensorList:
+                str_buffer += f"  {sensor_alias(sensor)}{value_in_color(lastStationData[station][sensor], sensor)}{value_postfix(sensor)}\t{str_min_max_TH(sensor, stationData.MinMaxTH(station,'day'))}{str_trend(lastStationData, station, sensor)}\n"
 
-    str_buffer = f""
-    for station, sensorList in zip(stationModulesList, listOfSensors):
-        str_buffer += f"\n{station}\n"
-        for sensor in sensorList:
-            str_buffer += f"  {sensor_alias(sensor)}{value_in_color(lastStationData[station][sensor], sensor)}{value_postfix(sensor)}\t{str_min_max_TH(sensor, stationData.MinMaxTH(station,'day'))}{str_trend(lastStationData, station, sensor)}\n"
+    except:
+        # Something getting wrong
+        str_buffer = 'Netatmo Server request failed!'
 
-except:
-    # Something getting wrong
-    str_buffer = 'Netatmo Server request failed!'
+    print (str_buffer)
+    if args.debug:
+        print (json.dumps(lastStationData, indent = 2))
 
-print (str_buffer)
-if args.debug:
-    print (json.dumps(lastStationData, indent = 2))
+if __name__=='__main__':
+    # parsing CLI arguments
+    parser = argparse.ArgumentParser(description = 'print telemetry data of Netatmo weather station',
+                                    formatter_class = argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('station_name', type = str,
+                        help = 'Netatmo weather station name')                                  # name of weather station
+    parser.add_argument('-c','--color', action = 'store_true',
+                        help = 'color or b/w output')                                           # color or b/w
+    parser.add_argument('-t','--temp', choices = ['f', 'c'], type = str,
+                        help = 'f - for Fahrenheit, c - for Celsius ', default = 'c')           # temp units
+    parser.add_argument('-p','--pressure', choices = ['mb', 'in', 'mm'], type = str,
+                        help = 'mb - for mbar, in - for inHg, mm - for mmHg', default = 'mb')   # pressure units
+    parser.add_argument('-d', '--debug', action = 'store_true',
+                        help = 'raw telemetry information')                                     # printing stations JSON file
+    args = parser.parse_args()
+
+    main(args)
