@@ -139,7 +139,7 @@ def list_of_sensors(numberOfModules):
     listOfSensors[-1] = [constants.TEMP, constants.HUMID, constants.CO2, constants.PRES]
 
     # initialization of additional modules
-    i=1
+    i = 1
     if numberOfModules > 2:
         while i < (numberOfModules - 1):
             listOfSensors[i] = [constants.TEMP, constants.HUMID, constants.CO2, constants.BAT]
