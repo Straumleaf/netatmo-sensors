@@ -135,13 +135,13 @@ def list_of_sensors(numberOfModules):
     listOfSensors = [[]] * numberOfModules
 
     # initialization of standard modules (one indoor + one outdoor) 
-    listOfSensors[0] = [constants.TEMP, constants.HUMID, constants.BAT]
-    listOfSensors[-1] = [constants.TEMP, constants.HUMID, constants.CO2, constants.PRES]
+    listOfSensors[0] = [constants.TEMP, constants.HUMID, constants.CO2, constants.PRES]
+    listOfSensors[1] = [constants.TEMP, constants.HUMID, constants.BAT]
 
     # initialization of additional modules
-    i = 1
+    i = 2
     if numberOfModules > 2:
-        while i < (numberOfModules - 1):
+        while i <= (numberOfModules - 1):
             listOfSensors[i] = [constants.TEMP, constants.HUMID, constants.CO2, constants.BAT]
             i += 1
 
@@ -157,19 +157,20 @@ def main(args):
     pressureUnits = args.pressure
 
     now = datetime.datetime.now()
-    print(f'>>> station name: {stationName} -', now.strftime('%H:%M:%S %d/%m/%Y'))
+    print(f'>>> Quering station: {stationName} -', now.strftime('%H:%M:%S %d/%m/%Y'))
 
-    #1 : Authenticate
+    #1 : Authorization as per .netatmo.credentials
     authorization = lnetatmo.ClientAuth()
 
     try:
         # 2 : Creating class loaded with devices list and all telemetry
         stationData = lnetatmo.WeatherStationData(authorization)
-        # getting list of weather station modules
-        stationModulesList = stationData.modulesNamesList(stationName)
         # getting most recent telemetry from station
         lastStationData = stationData.lastData()
-        
+        # getting list of weather station modules
+        stationModulesList = lastStationData.keys()
+        # stationModulesList = stationData.modulesNamesList()
+
         # counting existing modules
         numberOfModules = len(stationModulesList)
         listOfSensors = list_of_sensors(numberOfModules)
@@ -179,6 +180,7 @@ def main(args):
             str_buffer += f"\n{station}\n"
             for sensor in sensorList:
                 str_buffer += f"  {sensor_alias(sensor)}{value_in_color(lastStationData[station][sensor], sensor)}{value_postfix(sensor)}\t{str_min_max_TH(sensor, stationData.MinMaxTH(station,'day'))}{str_trend(lastStationData, station, sensor)}\n"
+        str_buffer += f"\n>>> Quering station: {stationName} complete - {now.strftime('%H:%M:%S %d/%m/%Y')}"
 
     except:
         # Something getting wrong
